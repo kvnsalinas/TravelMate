@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations</title>
+    <style>
+        :root {
+            /* Light theme (default) */
+            --bg-primary: #f9f9f9;
+            --bg-secondary: #fff;
+            --bg-navbar: white;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --accent-color: #4caf50;
+            --accent-color-hover: #45a049;
+            --date-bg: #f5f5f5;
+            --border-color: #eee;
+            --box-shadow-color: rgba(0,0,0,0.1);
+            --notification-bg: #28a745;
+            --notification-text: white;
+            --li-bg: #f9f9f9;
+        }
+        
+        /* Dark theme */
+        [data-theme="dark"] {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-navbar: #1e1e1e;
+            --text-primary: #f0f0f0;
+            --text-secondary: #aaaaaa;
+            --accent-color: #5cbb5f;
+            --accent-color-hover: #6dcc70;
+            --date-bg: #2c2c2c;
+            --border-color: #333;
+            --box-shadow-color: rgba(0,0,0,0.4);
+            --notification-bg: #2e8b57;
+            --notification-text: #f0f0f0;
+            --li-bg: #2c2c2c;
+        }
+        
+        /* Full-width Navigation Bar - Simplified */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--bg-navbar);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.5rem 20px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInDown 0.5s ease-out;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .navbar-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-title {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .navbar-title:hover {
+            color: var(--accent-color-hover);
+        }
+
+        /* Theme toggle switch */
+        .theme-toggle {
+            position: relative;
+            width: 52px;
+            height: 26px;
+        }
+        
+        .theme-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .theme-icon {
+            font-size: 16px;
+        }
+        
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            text-align: center;
+            background-color: var(--bg-secondary);
+            padding: 30px 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px var(--box-shadow-color);
+            width: 80%;
+            max-width: 600px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 80px; /* Space for navbar */
+        }
+
+        h1 {
+            font-size: 24px;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--li-bg);
+            color: var(--text-primary);
+            text-align: left;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn {
+            display: inline-block;
+            margin: 10px 5px;
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-color-hover);
+            transform: scale(1.05);
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 60px; /* Below navbar */
+            left: 50%;
+            transform: translate(-50%, -20px);
+            background-color: var(--notification-bg);
+            color: var(--notification-text);
+            padding: 12px 16px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px var(--box-shadow-color);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s, background-color 0.3s, color 0.3s;
+            z-index: 999;
+            display: none;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            display: flex;
+            align-items: center;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to {transform: rotate(360deg);}
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Simplified Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-title">TRAVELMATE</a>
+            
+            <div class="theme-toggle-container">
+                <span class="theme-icon">☀️</span>
+                <label class="theme-toggle">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
+                <span class="theme-icon">🌙</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Notification element -->
+    <div id="notification" class="notification">
+        <div class="loading-spinner"></div>
+        <span id="notification-text">Generating personalized recommendations for you!</span>
+    </div>
+
+    <div class="container">
+        <p>Here are some recommended places just for you:</p>
+
+        {% if recommendations %}
+            <ul>
+                {% for recommendation in recommendations %}
+                    <li>
+                        Place: {{ recommendation.place_name }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No recommendations available at the moment.</p>
+        {% endif %}
+
+        <a href="{{ url_for('main_page') }}" class="btn">Back to Main Page</a>
+    </div>
+
+    <script>
+        // Ensure all DOM content is loaded before running any script
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeToggle.checked = savedTheme === 'dark';
+            
+            // Theme toggle event listener
+            themeToggle.addEventListener('change', function() {
+                const newTheme = this.checked ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+            
+            // Parse URL parameters to check for notification
+            const urlParams = new URLSearchParams(window.location.search);
+            const showNotification = urlParams.get('notify');
+            
+            // If the notify parameter is present, show the notification
+            if (showNotification === 'true') {
+                const notification = document.getElementById('notification');
+                notification.classList.add('show');
+                
+                // Hide notification after 3 seconds
+                setTimeout(function() {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

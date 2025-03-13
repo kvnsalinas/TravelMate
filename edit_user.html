@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User | TravelMate</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit User</h1>
+
+        <form method="POST" action="{{ url_for('edit_user', user_id=user.id) }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{ user.username }}" required>
+            </div>
+            <div class="form-group">
+                <label for="preferences">Preferences (comma-separated)</label>
+                <textarea id="preferences" name="preferences">{{ user.preferences }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="is_active">Active Status</label>
+                <select id="is_active" name="is_active">
+                    <option value="true" {% if user.is_active %}selected{% endif %}>Active</option>
+                    <option value="false" {% if not user.is_active %}selected{% endif %}>Inactive</option>
+                </select>
+            </div>
+            <button type="submit">Save Changes</button>
+        </form>
+
+        <!-- Back to Dashboard -->
+        <div style="text-align: center; margin-top: 1rem;">
+            <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
